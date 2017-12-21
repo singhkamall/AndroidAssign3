@@ -1,6 +1,7 @@
 package com.example.owner.fatih_kamal_mapd711_onlinepurchase;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -35,36 +36,51 @@ public class MainActivity extends AppCompatActivity {
         boolean IsCustomer =
                 rb.getText().toString() == getResources().getString(R.string.radio_Customer);
 
-        boolean vaildCredential = IsCredentialsValid(helper, IsCustomer);
+        RequestResponse vaildCredential = IsCredentialsValid(helper, IsCustomer);
 
-        if (vaildCredential)
+        if (vaildCredential.Status)
         {
             SharedPreferences sharePref = getSharedPreferences("user", Context.MODE_PRIVATE);
 
             SharedPreferences.Editor editor = sharePref.edit();
             editor.putString(getResources().getString(R.string.sp_user), ((EditText)findViewById(R.id.usernameInput)).getText().toString());
             editor.putBoolean(getResources().getString(R.string.sp_is_customer), IsCustomer);
+            editor.putString(getResources().getString(R.string.sp_uid), vaildCredential.Message);
             editor.apply();
 
             Toast.makeText(this.getApplicationContext(), "Sign in successful", Toast.LENGTH_SHORT).show();
+
+            Intent i;
+
+            if(IsCustomer){
+                i = new Intent(this, ProductActivity.class);
+            } else {
+                i = new Intent(this, AllOrdersActivity.class);
+            }
+
+            startActivity(i);
+
         } else {
             Toast.makeText(this.getApplicationContext(), "Invalid Credentials", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public boolean IsCredentialsValid(DatabaseHelper helper, boolean IsCustomer)
+    public RequestResponse IsCredentialsValid(DatabaseHelper helper, boolean IsCustomer)
     {
         EditText username = (EditText)findViewById(R.id.usernameInput);
         EditText pwd = (EditText)findViewById(R.id.passwordInput);
 
-        if(username.getText().toString().trim().length() == 0 ||
+        if (username.getText().toString().trim().length() == 0 ||
                 pwd.getText().toString().trim().length() == 0)
         {
-            return false;
+            return new RequestResponse(false, null);
         }
 
         Cursor c;
+        String colID;
         if (IsCustomer) {
+
+            colID = PurchaseContract.CustomerEntry._ID;
 
             String[] Projection = {PurchaseContract.CustomerEntry._ID};
             String Selection = PurchaseContract.CustomerEntry.COLUMN_userName + " = ? AND " +
@@ -81,6 +97,8 @@ public class MainActivity extends AppCompatActivity {
 
         } else {
 
+            colID = PurchaseContract.ClerkEntry._ID;
+
             String[] Projection = {PurchaseContract.ClerkEntry._ID};
             String Selection = PurchaseContract.ClerkEntry.COLUMN_userName + " = ? AND " +
                     PurchaseContract.ClerkEntry.COLUMN_password + " = ?";
@@ -95,10 +113,16 @@ public class MainActivity extends AppCompatActivity {
                     );
         }
 
-        if(c.getCount() > 0)
-            return true;
+        if(c.getCount() > 0) {
+            c.moveToFirst();
+            int colIndex = c.getColumnIndex(colID);
+            String uid = String.valueOf(c.getInt(colIndex));
+
+            return new RequestResponse(true, uid);
+        }
         else
-            return false;
+            return new RequestResponse(false, null);
+
     }
 
     public void Read(SQLiteDatabase db)

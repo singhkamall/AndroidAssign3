@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="text"
-        android:text="fatih"/>
+        android:text="cust"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -59,17 +59,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/radio_Clerk"
-            android:checked="true"/>
+            />
 
         <RadioButton android:id="@+id/radio_Standard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:checked="true"
             android:text="@string/radio_Customer"/>
 
     </RadioGroup>
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:text="Login"

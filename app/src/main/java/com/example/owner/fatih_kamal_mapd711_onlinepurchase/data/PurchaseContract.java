@@ -50,6 +50,7 @@ public class PurchaseContract {
         public static final String COLUMN_employeeId = "employeeId";
         public static final String COLUMN_orderDate = "orderDate";
         public static final String COLUMN_status = "status";
+        public static final String COLUMN_quantity = "quantity";
     }
 
 }

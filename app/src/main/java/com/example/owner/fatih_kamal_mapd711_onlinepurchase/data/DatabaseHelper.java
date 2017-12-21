@@ -1,5 +1,6 @@
 package com.example.owner.fatih_kamal_mapd711_onlinepurchase.data;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,7 +13,7 @@ import com.example.owner.fatih_kamal_mapd711_onlinepurchase.data.PurchaseContrac
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static  final String DATABASE_NAME = "OnlinePur.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
 
     private static final String TABLE_CLERK_CREATE =
             "CREATE TABLE " + ClerkEntry.TABLE_NAME + " (" +
@@ -125,10 +126,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + CustomerEntry.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + ClerkEntry.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + ProductEntry.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + OrderEntry.TABLE_NAME);
+//        db.execSQL("DROP TABLE IF EXISTS " + CustomerEntry.TABLE_NAME);
+//        db.execSQL("DROP TABLE IF EXISTS " + ClerkEntry.TABLE_NAME);
+//        db.execSQL("DROP TABLE IF EXISTS " + ProductEntry.TABLE_NAME);
+//        db.execSQL("DROP TABLE IF EXISTS " + OrderEntry.TABLE_NAME);
+
+        db.execSQL("ALTER TABLE " + OrderEntry.TABLE_NAME + " ADD COLUMN " + OrderEntry.COLUMN_quantity + " TEXT");
     }
 
     public Cursor GetData
@@ -137,9 +140,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor c = db.query(Table_Name,
-                Projection, Selection, SelectionArgs, null,null,null);
+        Cursor c = db.query(Table_Name, Projection, Selection, SelectionArgs,
+                null,null,null);
 
         return c;
     }
+
+    public Object InsertRow(String TableName, ContentValues values)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        Object id = db.insert(TableName, null, values);
+        return id;
+    }
+
+    public void Update(String TableName, ContentValues values, String where, String[] whereAegs)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.update(TableName, values, where, whereAegs);
+    }
+
+    public void DeleteRow(String TableName, String where, String[] whereArgs)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TableName, where, whereArgs);
+    }
+
 }

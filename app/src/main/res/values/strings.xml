@@ -3,7 +3,7 @@
 
     <string name="sp_user">user</string>
     <string name="sp_is_customer">isCust</string>
-    <string name="sp_is_login">IsLogIn</string>
+    <string name="sp_uid">uid</string>
 
     <string name="radio_Clerk">Clerk</string>
     <string name="radio_Customer">Customer</string>
