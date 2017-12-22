@@ -18,7 +18,8 @@ public class ProductOrderModel {
     }
 
     ProductOrderModel(String _productId, String _productName, String _price, String _available_quantity, String _category,
-                      String orderId, String _customerId, String _employeeId, String _orderDate, String _status, String _quantity) {
+                      String orderId, String _customerId, String _employeeId, String _orderDate, String _status, String _quantity,
+                      String _customerName) {
         this.productId = _productId;
         this.productName = _productName;
         this.price = _price;
@@ -31,6 +32,7 @@ public class ProductOrderModel {
         this.orderDate = _orderDate;
         this.status = _status;
         this.quantity = _quantity;
+        this.customerName = _customerName;
     }
 
     public String productId;
@@ -46,6 +48,8 @@ public class ProductOrderModel {
     public String orderDate;
     public String status;
     public String quantity;
+
+    public String customerName;
 
     public ArrayList<ProductsModel> GetAllProducts() {
         DatabaseHelper helper = new DatabaseHelper(_context);
@@ -108,7 +112,68 @@ public class ProductOrderModel {
             }
 
             ProductOrderModel pom =
-                    new ProductOrderModel(pid, pName, pPrice, pAvailable, pCat, oId, oCustId, oEmpId, oDate, oStatus, oQty);
+                    new ProductOrderModel(pid, pName, pPrice, pAvailable, pCat, oId, oCustId, oEmpId, oDate, oStatus, oQty, null);
+            ordersList.add(pom);
+        }
+
+        return ordersList;
+    }
+
+    public ArrayList<ProductOrderModel> GetAllOrders() {
+        DatabaseHelper helper = new DatabaseHelper(_context);
+
+        String OrderTable = PurchaseContract.OrderEntry.TABLE_NAME;
+        String Selection = null;
+        String[] SelectionArgs = {};
+
+        Cursor c = helper.GetData(OrderTable, null, Selection, SelectionArgs);
+
+        ArrayList<ProductsModel> allProucts = GetAllProducts();
+
+        ArrayList<ProductOrderModel> ordersList = new ArrayList<>();
+
+        // Getting ALl Customers
+        Cursor cCustomers = helper.GetData(PurchaseContract.CustomerEntry.TABLE_NAME, null, null, null);
+
+        while (c.moveToNext()) {
+
+            String pid = c.getString(c.getColumnIndex(PurchaseContract.OrderEntry.COLUMN_productId));
+            String oId = c.getString(c.getColumnIndex(PurchaseContract.OrderEntry._ID));
+            String oCustId = c.getString(c.getColumnIndex(PurchaseContract.OrderEntry.COLUMN_customerId));
+            String oEmpId = c.getString(c.getColumnIndex(PurchaseContract.OrderEntry.COLUMN_employeeId));
+            String oDate = c.getString(c.getColumnIndex(PurchaseContract.OrderEntry.COLUMN_orderDate));
+            String oStatus = c.getString(c.getColumnIndex(PurchaseContract.OrderEntry.COLUMN_status));
+            String oQty = c.getString(c.getColumnIndex(PurchaseContract.OrderEntry.COLUMN_quantity));
+
+            String pName = "", pPrice = "", pAvailable = "", pCat = "", customerName = "";
+            // Populatin Product Information
+            for (ProductsModel pm : allProucts) {
+                String _pid = pm._ID;
+
+                if (_pid.toString().equals(pid.toString())) {
+                    pName = pm.COLUMN_productName;
+                    pPrice = pm.COLUMN_price;
+                    pAvailable = pm.COLUMN_quantity_val;
+                    pName = pm.COLUMN_productName;
+                    pCat = pm.COLUMN_category;
+
+                    break;
+                }
+            }
+
+            // Populatin Customer Information
+            while (cCustomers.moveToNext()) {
+                String _custID = cCustomers.getString(cCustomers.getColumnIndex(PurchaseContract.CustomerEntry._ID));
+
+                if (_custID.equals(oCustId)) {
+                    customerName = cCustomers.getString(cCustomers.getColumnIndex(PurchaseContract.CustomerEntry.COLUMN_firstname));
+
+                    break;
+                }
+            }
+
+            ProductOrderModel pom =
+                    new ProductOrderModel(pid, pName, pPrice, pAvailable, pCat, oId, oCustId, oEmpId, oDate, oStatus, oQty, customerName);
             ordersList.add(pom);
         }
 

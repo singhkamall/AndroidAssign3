@@ -13,7 +13,7 @@ import com.example.owner.fatih_kamal_mapd711_onlinepurchase.data.PurchaseContrac
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static  final String DATABASE_NAME = "OnlinePur.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 1;
 
     private static final String TABLE_CLERK_CREATE =
             "CREATE TABLE " + ClerkEntry.TABLE_NAME + " (" +
@@ -52,7 +52,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     OrderEntry.COLUMN_productId + " INTEGER, " +
                     OrderEntry.COLUMN_employeeId + " INTEGER, " +
                     OrderEntry.COLUMN_orderDate + " TEXT, " +
-                    OrderEntry.COLUMN_status + " TEXT" +
+                    OrderEntry.COLUMN_status + " TEXT," +
+                    OrderEntry.COLUMN_quantity + " TEXT" +
             ")";
 
     public DatabaseHelper(Context context) {
@@ -77,10 +78,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 ClerkEntry.COLUMN_password + ", " +
                 ClerkEntry.COLUMN_firstname + ", " +
                 ClerkEntry.COLUMN_lastname +
-                ") VALUES (NULL, \"fatih\", \"password\", \"Fatih\", \"Inan\")";
+                ") VALUES (NULL, \"clerk\", \"password\", \"Fatih\", \"Inan\")";
         db.execSQL(ClerkRecord);
 
-        String CustomerRecord = "INSERT INTO " + CustomerEntry.TABLE_NAME +
+        String CustomerRecord1 = "INSERT INTO " + CustomerEntry.TABLE_NAME +
                 "(" +
                 CustomerEntry._ID + ", " +
                 CustomerEntry.COLUMN_userName + ", " +
@@ -91,7 +92,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 CustomerEntry.COLUMN_city + ", " +
                 CustomerEntry.COLUMN_postalCode +
                 ") VALUES (NULL, \"cust\", \"password\", \"Mike\", \"Peterson\", NULL, NULL, NULL)";
-        db.execSQL(CustomerRecord);
+        db.execSQL(CustomerRecord1);
+
+        String CustomerRecord2 = "INSERT INTO " + CustomerEntry.TABLE_NAME +
+                "(" +
+                CustomerEntry._ID + ", " +
+                CustomerEntry.COLUMN_userName + ", " +
+                CustomerEntry.COLUMN_password + ", " +
+                CustomerEntry.COLUMN_firstname + ", " +
+                CustomerEntry.COLUMN_lastname + ", " +
+                CustomerEntry.COLUMN_address + ", " +
+                CustomerEntry.COLUMN_city + ", " +
+                CustomerEntry.COLUMN_postalCode +
+                ") VALUES (NULL, \"john\", \"password\", \"John\", \"John\", NULL, NULL, NULL)";
+        db.execSQL(CustomerRecord2);
 
         String ProductRecord_1 = "INSERT INTO " + ProductEntry.TABLE_NAME +
                 "(" +
@@ -100,7 +114,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 ProductEntry.COLUMN_price + ", " +
                 ProductEntry.COLUMN_quantity + ", " +
                 ProductEntry.COLUMN_category +
-                ") VALUES (NULL, \"Tea\", \"1\", \"1\", \"Grocery\")";
+                ") VALUES (NULL, \"Tea\", \"1\", \"3\", \"Grocery\")";
         db.execSQL(ProductRecord_1);
 
         String ProductRecord_2 = "INSERT INTO " + ProductEntry.TABLE_NAME +
@@ -110,7 +124,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 ProductEntry.COLUMN_price + ", " +
                 ProductEntry.COLUMN_quantity + ", " +
                 ProductEntry.COLUMN_category +
-                ") VALUES (NULL, \"Bread\", \"2\", \"1\", \"Grocery\")";
+                ") VALUES (NULL, \"Bread\", \"2\", \"4\", \"Grocery\")";
         db.execSQL(ProductRecord_2);
 
         String ProductRecord_3 = "INSERT INTO " + ProductEntry.TABLE_NAME +
@@ -120,7 +134,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 ProductEntry.COLUMN_price + ", " +
                 ProductEntry.COLUMN_quantity + ", " +
                 ProductEntry.COLUMN_category +
-                ") VALUES (NULL, \"Milk\", \"3\", \"1\", \"Grocery\")";
+                ") VALUES (NULL, \"Milk\", \"3\", \"6\", \"Grocery\")";
         db.execSQL(ProductRecord_3);
     }
 
@@ -131,7 +145,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //        db.execSQL("DROP TABLE IF EXISTS " + ProductEntry.TABLE_NAME);
 //        db.execSQL("DROP TABLE IF EXISTS " + OrderEntry.TABLE_NAME);
 
-        db.execSQL("ALTER TABLE " + OrderEntry.TABLE_NAME + " ADD COLUMN " + OrderEntry.COLUMN_quantity + " TEXT");
+//        db.execSQL("ALTER TABLE " + OrderEntry.TABLE_NAME + " ADD COLUMN " + OrderEntry.COLUMN_quantity + " TEXT");
     }
 
     public Cursor GetData

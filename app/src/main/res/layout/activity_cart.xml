@@ -52,7 +52,7 @@
                 android:layout_width="105px"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="100px"
-                android:text="Add"
+                android:text="Save"
                 android:textColor="@color/colorWhite"
                 android:textAppearance="@style/TextAppearance.AppCompat.Light.Widget.PopupMenu.Small" />
 
